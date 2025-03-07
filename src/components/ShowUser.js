@@ -9,7 +9,7 @@ const ShowUser = () => {
     const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    getData() // Llama a la URL base
+    getData("/",100) // Llama a la URL base
       .then((response) => setUsers(response))
       .catch((error) => console.error("Error al obtener datos", error));
   }, []);
@@ -53,12 +53,12 @@ const ShowUser = () => {
                                     <td>{user.email}</td>
                                     <td>{user.fechaNac}</td>
                                     <td>
-                                        Calle:{user.datos.calle}<br/>
-                                        Número:{user.datos.numero}<br/>
-                                        Colonia:{user.datos.colonia}<br/>
-                                        Delegación:{user.datos.delegacion}<br/>
-                                        Estado:{user.datos.estado}<br/>
-                                        CP:{user.datos.cp}
+                                        Calle:{user.datos?.calle  || ""}<br/>
+                                        Número:{user.datos?.numero || ""}<br/>
+                                        Colonia:{user.datos?.colonia || ""}<br/>
+                                        Delegación:{user.datos?.delegacion || ""}<br/>
+                                        Estado:{user.datos?.estado || ""}<br/>
+                                        CP:{user.datos?.cp || ""}
                                     </td>
                                     <td></td>
                                     <td>
@@ -80,7 +80,6 @@ const ShowUser = () => {
                 </Col>
             </Row>
         </Container>
-        <CameraCapture></CameraCapture>
     </div>
   )
 }

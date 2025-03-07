@@ -15,9 +15,13 @@ const apiClient = axios.create({
  * Obtiene datos desde la API.
  * @param {string} [endpoint=""] - Ruta del recurso (opcional).
  */
-export const getData = async (endpoint) => {
+export const getData = async (endpoint,limit) => {
   try {
-    const response = await apiClient.get(endpoint);
+    const response = await apiClient.get(endpoint,{
+      params: {
+        limit: limit
+      }
+    });
     return response.data;
   } catch (error) {
     console.error(`Error al obtener datos de ${endpoint}:`, error);
