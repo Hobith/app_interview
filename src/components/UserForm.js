@@ -1,6 +1,6 @@
 import React,  { useState,useEffect} from 'react';
 import { Modal, Button, Tooltip, OverlayTrigger,Container,Form} from 'react-bootstrap';
-import { validationSchema, calculateAge} from '../utils/functions';
+import { validationSchema} from '../utils/functions';
 import CameraCapture from './CameraCapture';
 import { useFormik } from "formik";
 import { postData } from "../services/apiService";
