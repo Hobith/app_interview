@@ -1,84 +1,97 @@
 import React,  { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Container, Row, Col, Table, Tooltip, OverlayTrigger} from 'react-bootstrap';
+import { Container, Row, Col, Tooltip, OverlayTrigger,Spinner } from 'react-bootstrap';
 import UserForm from './UserForm';
 import { getData } from "../services/apiService";
-import CameraCapture from './CameraCapture';
+import DataTable from 'react-data-table-component';
 
 const ShowUser = () => {
     const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    const columns = [
+        { name: "ID", selector: row => row.id, sortable: true },
+        { name: "Nombre", selector: row => row.name, sortable: true },
+        { name: "Apellido Paterno", selector: row => row.apellidoPaterno, sortable: true },
+        { name: "Apellido Materno", selector: row => row.apellidoMaterno, sortable: true },
+        { name: "Edad", selector: row => row.edad, sortable: true },
+        { name: "Correo Electrónico", selector: row => row.email, sortable: true },
+        { name: "Fecha de Nacimiento", selector: row => row.fechaNac, sortable: true },
+        { name: "Calle ", selector: row => row.datos?.calle || "", sortable: true },
+        { name: "Número ", selector: row => row.datos?.numero || "", sortable: true },
+        { name: "Colonia ", selector: row => row.datos?.colonia || "", sortable: true },
+        { name: "Delegación ", selector: row => row.datos?.delegacion || "", sortable: true },
+        { name: "CP ", selector: row => row.datos?.estado || "", sortable: true },
+        { name: "Selfie ",       cell: row => (
+            row.datos?.imagen || "" ? (
+              <img
+                src={row.datos?.imagen}
+                alt="Foto"
+                width="100"
+                height="100"
+              />
+            ) : (
+              "Sin imagen"
+            )
+          ),
+          ignoreRowClick: true,
+          allowOverflow: true,
+          button: true,},
+        { name: "Acciones ", cell: row => (
+            <OverlayTrigger
+                overlay={
+                    <Tooltip>Editar</Tooltip>
+                }
+            >
+                <button className='btn color-button'>
+                    <i className='fa-solid fa-edit'></i>
+                </button>
+            </OverlayTrigger>
+        ) }
+      ];
 
   useEffect(() => {
-    getData("/",100) // Llama a la URL base
-      .then((response) => setUsers(response))
-      .catch((error) => console.error("Error al obtener datos", error));
+    const fetchData = async () => {
+        try {
+          // Llamamos a la función asíncrona y esperamos los datos
+          const response = await getData("/", 100,10); // Llamada a la API con parámetros
+          
+          setUsers(response); // Si la solicitud es exitosa, guardamos los usuarios
+        } catch (error) {
+          console.error("Error al obtener datos"); // Mostramos el error en la consola
+        }
+        finally {
+            setLoading(false); // Ocultamos el spinner al terminar
+          }
+      };
+  
+      fetchData(); // Llamamos a la función asíncrona dentro del useEffect
   }, []);
 
   return (
     <div className='App'>
-        {/* Para la tabla */}
         <Container fluid>
-            <h1>Registro de usuario</h1>
+        <h1>Registro de usuario</h1>
             <Row>
                 <Col md={{ offset: 10}}>
                     {/* Para el modal */}
                     <UserForm />
                 </Col>
             </Row>
-            <Row className='mt-3'>
-                <Col xs={12} md={12} lg={12}>
-                    <Table striped bordered responsive>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nombre</th>
-                                <th>Apellido Paterno</th>
-                                <th>Apellido Materno</th>
-                                <th>Edad</th>
-                                <th>Correo Electrónico</th>
-                                <th>Fecha de Nacimiento</th>
-                                <th>Datos</th>
-                                <th>Imagen</th>
-                                <th>Acciones</th>
-                                </tr>
-                        </thead>
-                        <tbody className='table-group-divider'>
-                            {users.map((user, id)=>(
-                                <tr key={user.id}>
-                                    <td>{user.id}</td>
-                                    <td>{user.nombre}</td>
-                                    <td>{user.apellidoPaterno}</td>
-                                    <td>{user.apellidoMaterno}</td>
-                                    <td>{user.edad}</td>
-                                    <td>{user.email}</td>
-                                    <td>{user.fechaNac}</td>
-                                    <td>
-                                        Calle:{user.datos?.calle  || ""}<br/>
-                                        Número:{user.datos?.numero || ""}<br/>
-                                        Colonia:{user.datos?.colonia || ""}<br/>
-                                        Delegación:{user.datos?.delegacion || ""}<br/>
-                                        Estado:{user.datos?.estado || ""}<br/>
-                                        CP:{user.datos?.cp || ""}
-                                    </td>
-                                    <td></td>
-                                    <td>
-                                        <OverlayTrigger
-                                            overlay={
-                                                <Tooltip>Editar</Tooltip>
-                                            }
-                                        >
-                                            <button className='btn color-button'>
-                                                <i className='fa-solid fa-edit'></i>
-                                            </button>
-                                        </OverlayTrigger>
-                                    </td>
-                                </tr>
-                            ))
-                            }
-                        </tbody>
-                    </Table>
-                </Col>
-            </Row>
+        
+        {loading ? (
+            <div className="text-center">
+            <Spinner animation="border" />
+            </div>
+        ) : (
+            <DataTable
+            columns={columns}
+            data={users}
+            pagination
+            highlightOnHover
+            striped
+            responsive
+            />
+        )}
         </Container>
     </div>
   )
