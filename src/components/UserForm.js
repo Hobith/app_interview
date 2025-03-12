@@ -4,11 +4,15 @@ import { validationSchema} from '../utils/functions';
 import CameraCapture from './CameraCapture';
 import { useFormik } from "formik";
 import { postData } from "../services/apiService";
+import Calendar from 'react-calendar';
+import moment from 'moment'
 
 function  UserForm () {
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  
+  const [show, setShow] = useState(false); // Declaracion de variables para la manipulacion del modal.
+  const handleClose = () => setShow(false); // Cerrar modal
+  const handleShow = () => setShow(true); // Mostrar el modal.
+  const [fecha, onChange] = useState (new Date()); // Para el calendario
 
   const formik = useFormik({
     initialValues: {
@@ -130,9 +134,14 @@ function  UserForm () {
         </Form.Group>
         <Form.Group className="mb-3">
           <Form.Label>Fecha de Cumpleaños</Form.Label>
+{/*           <div>
+            <Calendar onChange={onChange} value={fecha} id="fechaNac"   />
+            <p>Fecha : {moment(fecha).format('YYYY-MM-DD')}</p>
+          </div> */}
           <Form.Control 
             id="fechaNac" 
-            type="text" 
+            type="date" 
+            pattern="\d{4}-\d{2}-\d{2}"
              {...formik.getFieldProps("fechaNac")}  
           />
           {formik.touched.fechaNac && formik.errors.fechaNac && (
