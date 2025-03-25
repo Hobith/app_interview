@@ -1,4 +1,9 @@
+// Yup es una biblioteca de validación de esquemas para JavaScript, comúnmente utilizada con Formik en
+//  formularios de React. Permite definir reglas de validación de manera fácil y declarativa.
 import * as Yup from 'yup';
+
+//  React-Bootstrap es una biblioteca que adapta Bootstrap para su uso en aplicaciones de React, 
+// proporcionando componentes reutilizables en lugar de clases CSS tradicionales.
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 
 export const validationSchema = Yup.object({
